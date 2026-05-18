@@ -18,7 +18,7 @@ export function AuthProvider({ children }) {
     }
     try {
       const { data } = await api.get("/auth/session");
-      setUser(data?.user);
+      setUser(data?.user || data?.session);
     } catch (error) {
       // clear invalid token
       console.log(error);
@@ -47,7 +47,7 @@ export function AuthProvider({ children }) {
   };
 
   const logout = async () => {
-    localStorage.setItem("token", null);
+    localStorage.removeItem("token");
     setToken(null);
     setUser(null);
   };

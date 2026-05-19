@@ -1,8 +1,11 @@
-import { DEPARTMENTS, dummyEmployeeData } from "../assets/assets";
+import { DEPARTMENTS } from "../assets/assets";
 import { useCallback, useEffect, useState } from "react";
 import { Plus, Search, X } from "lucide-react";
+import toast from "react-hot-toast";
 import EmployeeCard from "../components/EmployeeCard";
 import EmployeeForm from "../components/EmployeeForm";
+import DeleteEmployeeModal from "../components/DeleteEmployeeModal";
+import api from "../api/axios";
 
 const Employees = () => {
   const [employees, setEmployees] = useState([]);
@@ -11,21 +14,27 @@ const Employees = () => {
   const [selectedDept, setSelectedDept] = useState("");
   const [editEmployee, setEditEmployee] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [deleteEmployee, setDeleteEmployee] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchEmployees = useCallback(async () => {
-    setLoading(true);
-    setEmployees(
-      dummyEmployeeData.filter((emp) =>
-        selectedDept ? emp.department === selectedDept : emp,
-      ),
-    );
-    setTimeout(() => {
+    try {
+      const url = selectedDept ? `/employees?department=${selectedDept}` : "/employees";
+      const res = await api.get(url);
+      setEmployees(res.data);
+    } catch {
+      console.log("Failed to fetch employees data");
+    } finally {
       setLoading(false);
-    }, 1000);
-  },[selectedDept]);
+    }
+  }, [selectedDept]);
 
   useEffect(() => {
-    fetchEmployees();
+    const loadEmployees = async () => {
+      await fetchEmployees();
+    };
+
+    void loadEmployees();
   }, [fetchEmployees]);
 
   const filtered = employees.filter((emp) =>
@@ -33,6 +42,25 @@ const Employees = () => {
       .toLowerCase()
       .includes(search.toLowerCase()),
   );
+
+  const handleDeleteRequest = (employee) => {
+    setDeleteEmployee(employee);
+  };
+
+  const confirmDeleteEmployee = async () => {
+    if (!deleteEmployee) return;
+    setDeleting(true);
+    try {
+      await api.delete(`/employees/${deleteEmployee.id}`);
+      toast.success("Employee deleted successfully.");
+      setDeleteEmployee(null);
+      fetchEmployees();
+    } catch (error) {
+      toast.error(error.response?.data?.error || "Failed to delete employee.");
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   return (
     <div className="animate-fade-in">
@@ -90,8 +118,9 @@ const Employees = () => {
           ) : (
             filtered.map((emp) => (
               <EmployeeCard
+                key={emp.id}
                 employee={emp}
-                onDelete={fetchEmployees}
+                onDelete={handleDeleteRequest}
                 onEdit={(e) => setEditEmployee(e)}
               />
             ))
@@ -183,6 +212,14 @@ const Employees = () => {
           </div>
         </div>
       )}
+
+      <DeleteEmployeeModal
+        open={!!deleteEmployee}
+        employee={deleteEmployee}
+        loading={deleting}
+        onClose={() => setDeleteEmployee(null)}
+        onConfirm={confirmDeleteEmployee}
+      />
     </div>
   );
 };

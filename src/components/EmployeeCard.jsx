@@ -2,7 +2,7 @@ import { PencilIcon, TrashIcon } from "lucide-react";
 
 const EmployeeCard = ({ employee, onDelete, onEdit }) => {
   const handleDelete = () => {
-    if (!confirm("Are you sure you want to delete this employee?")) return;
+    if (onDelete) onDelete(employee);
   };
   return (
     <div className="group relative card card-hover overflow-hidden">
@@ -46,7 +46,7 @@ const EmployeeCard = ({ employee, onDelete, onEdit }) => {
 
       <div className="p-5">
         <h3 className="text-slate-900">
-          {employee.firstName} {employee.firstName}
+          {employee.firstName} {employee.lastName}
         </h3>
         <p className="text-xs text-slate-500">{employee.position}</p>
       </div>

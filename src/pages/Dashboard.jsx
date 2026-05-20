@@ -31,12 +31,6 @@ const Dashboard = () => {
   } else {
     return <EmployeeDashboard data={data} />;
   }
-
-  // return (
-  //   <div>
-  //       Dashobard
-  //   </div>
-  // )
 };
 
 export default Dashboard;

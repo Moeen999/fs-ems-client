@@ -8,7 +8,6 @@ const LeaveHistory = ({ leaves, isAdmin, onUpdate }) => {
   const handleStatusUpdate = async (id, status) => {
     setProcessing(id);
   };
-
   return (
     <div className="card overflow-hidden">
       <div className="overflow-x-auto">
@@ -40,8 +39,7 @@ const LeaveHistory = ({ leaves, isAdmin, onUpdate }) => {
                   <tr key={leave?._id || leave?.id}>
                     {isAdmin && (
                       <td className="text-slate-900">
-                        {leave.employee?.firstName}
-                        {leave.employee?.lastName}
+                        {leave.employee}
                       </td>
                     )}
 

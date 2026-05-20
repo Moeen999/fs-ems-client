@@ -102,7 +102,7 @@ const EmployeeForm = ({ initialData, onSuccess, onCancel }) => {
               name="department"
               defaultValue={initialData?.department || ""}
             >
-              <option value="">Select Deoartment</option>
+              <option value="">Select Department</option>
               {DEPARTMENTS.map((dept) => (
                 <option value={dept} key={dept}>
                   {dept}

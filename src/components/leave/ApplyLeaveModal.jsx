@@ -1,8 +1,10 @@
 import { CalendarDays, FileText, Loader2, Send, X } from "lucide-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
+import api from "../../api/axios";
 
 const ApplyLeaveModal = ({ open, onClose, onSuccess }) => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const today = new Date();
   const tomorrow = new Date(today);
@@ -12,6 +14,19 @@ const ApplyLeaveModal = ({ open, onClose, onSuccess }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+      await api.post("/leave", data);
+      onSuccess();
+      onClose();
+    } catch (error) {
+      toast.error(error.response?.data?.error || error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!open) return null;
@@ -74,7 +89,7 @@ const ApplyLeaveModal = ({ open, onClose, onSuccess }) => {
               </div>
               <div>
                 <span className="block text-xs text-slate-400 mb-1">To</span>
-                <input type="date" name="endDate  " required min={minDate} />
+                <input type="date" name="endDate" required min={minDate} />
               </div>
             </div>
           </div>
@@ -102,9 +117,8 @@ const ApplyLeaveModal = ({ open, onClose, onSuccess }) => {
               Cancel
             </button>
             <button
-              type="button"
+              type="submit"
               className="btn-primary flex-1 flex items-center justify-center gap-2"
-              onClick={onClose}
               disabled={loading}
             >
               {loading ? (

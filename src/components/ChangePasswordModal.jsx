@@ -1,12 +1,35 @@
 import { Loader2, LockIcon, X } from "lucide-react";
 import { useState } from "react";
+import api from "../api/axios";
 
 const ChangePasswordModal = ({ open, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
 
   const handleSubmit = async (e) => {
-    e.preventDeafult();
+    e.preventDefault();
+    setLoading(true);
+    setMessage({ type: "", text: "" });
+    const formData = new FormData(e.currentTarget);
+    const currentPassword = formData.get("currentPassword");
+    const newPassword = formData.get("newPassword");
+
+    try {
+      const { data } = await api.post("/auth/change-password", {
+        currentPassword,
+        newPassword,
+      });
+      if (!data.success) {
+        throw new Error(data.error || "Failed to update the password.");
+      }
+
+      setMessage({ type: "success", text: "Password updated succesfully!" });
+      e.target.reset();
+    } catch (error) {
+      setMessage({ type: "error", text: error.message });
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!open) return null;
@@ -55,10 +78,11 @@ const ChangePasswordModal = ({ open, onClose }) => {
           </div>
 
           <div className="flex gap-3 pt-2">
-            <button className="btn-secondary flex-1" onClick={onClose}>
+            <button type="button" className="btn-secondary flex-1" onClick={onClose}>
               Cancel
             </button>
             <button
+              type="submit"
               disabled={loading}
               className="btn-primary flex-1 flex justify-center items-center gap-2"
             >

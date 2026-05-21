@@ -1,12 +1,22 @@
 import { format } from "date-fns";
 import { Check, Loader2, X } from "lucide-react";
 import { useState } from "react";
+import api from "../../api/axios";
+import toast from "react-hot-toast";
 
 const LeaveHistory = ({ leaves, isAdmin, onUpdate }) => {
   const [processing, setProcessing] = useState(null);
 
   const handleStatusUpdate = async (id, status) => {
     setProcessing(id);
+    try {
+      await api.patch(`/leave/${id}`, { status });
+      onUpdate();
+    } catch (error) {
+      toast.error(error?.response?.data?.error || error?.message);
+    } finally {
+      setProcessing(null);
+    }
   };
   return (
     <div className="card overflow-hidden">
@@ -38,9 +48,7 @@ const LeaveHistory = ({ leaves, isAdmin, onUpdate }) => {
                 return (
                   <tr key={leave?._id || leave?.id}>
                     {isAdmin && (
-                      <td className="text-slate-900">
-                        {leave.employee}
-                      </td>
+                      <td className="text-slate-900">{leave.employee}</td>
                     )}
 
                     <td>

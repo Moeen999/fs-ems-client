@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { dummyPayslipData } from "../assets/assets";
 import Loading from "../components/Loading";
 import { format } from "date-fns";
+import api from "../api/axios";
 
 const PrintPaySlip = () => {
   const { id } = useParams();
   const [payslip, setPayslip] = useState(null);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    setPayslip(dummyPayslipData.find((slip) => slip._id === id));
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
+    api
+      .get(`/payslips/${id}`)
+      .then((res) => setPayslip(res.data?.data))
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, [id]);
 
   if (loading) return <Loading />;
@@ -27,7 +28,7 @@ const PrintPaySlip = () => {
           PAYSLIP
         </h1>
         <p className="text-slate-500 text-sm mt-1">
-          {format(new Date(payslip.year, payslip.month - 1), "MMMM yyy")}
+          {format(new Date(payslip?.year, payslip?.month - 1), "MMMM yyy")}
         </p>
       </div>
 
@@ -37,7 +38,7 @@ const PrintPaySlip = () => {
             Employee Name
           </p>
           <p className="font-semibold text-slate-900">
-            {payslip.employee?.firstName} {payslip.employee?.lastName}
+            {payslip?.employee?.firstName} {payslip?.employee?.lastName}
           </p>
         </div>
         <div>
@@ -45,7 +46,7 @@ const PrintPaySlip = () => {
             Position
           </p>
           <p className="font-semibold text-slate-900">
-            {payslip.employee?.position}
+            {payslip?.employee?.position}
           </p>
         </div>
         <div>
@@ -53,7 +54,7 @@ const PrintPaySlip = () => {
             Email
           </p>
           <p className="font-semibold text-slate  -900">
-            {payslip.employee?.email}
+            {payslip?.employee?.email}
           </p>
         </div>
         <div>
@@ -61,7 +62,7 @@ const PrintPaySlip = () => {
             Period
           </p>
           <p className="font-semibold text-slate-900">
-            {format(new Date(payslip.year, payslip.month - 1), "MMMM yyy")}
+            {format(new Date(payslip?.year, payslip?.month - 1), "MMMM yyy")}
           </p>
         </div>
       </div>

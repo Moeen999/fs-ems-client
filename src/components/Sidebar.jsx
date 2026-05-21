@@ -26,7 +26,7 @@ const Sidebar = () => {
   useEffect(() => {
     api.get("/profile").then(({ data }) => {
       if (data.firstName)
-        setUsername(`${data.firstName} ${data.lastName || ""}`).trim();
+        setUsername(`${data.firstName} ${data.lastName || ""}`);
     });
   }, []);
 

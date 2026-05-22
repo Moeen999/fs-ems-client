@@ -32,26 +32,30 @@ const CheckInButton = ({ todayRec, onAction }) => {
   const isCheckedIn = !!todayRec?.checkIn;
 
   return (
-    <div className="absolute bottom-4 right-4 flex flex-col z-1">
+    <div className="fixed bottom-0 left-4 right-4 sm:absolute sm:bottom-4 sm:right-4 sm:left-auto sm:w-auto flex flex-col z-50">
       <button
         onClick={handleAttendance}
         disabled={loading}
-        className={`w-full max-w-xs flex justify-between items-center gap-8 p-4 rounded-xl bg-linear-to-br text-white ${isCheckedIn ? "from-slate-700 to-slate-900" : "from-indigo-600 to-indigo-700"}`}
+        className={`w-full sm:max-w-md flex justify-between items-center gap-4 sm:gap-8 px-4 sm:px-6 py-3 sm:py-4 rounded-xl bg-linear-to-br text-white transition-all ${
+          isCheckedIn
+            ? "from-slate-700 to-slate-900 hover:shadow-lg active:scale-95"
+            : "from-indigo-600 to-indigo-700 hover:shadow-lg active:scale-95"
+        } disabled:opacity-60 disabled:cursor-not-allowed`}
       >
         {loading ? (
-          <Loader2Icon className="size-7 animate-spin" />
+          <Loader2Icon className="size-5 sm:size-7 animate-spin flex-shrink-0" />
         ) : isCheckedIn ? (
-          <LogOutIcon className="size-7" />
+          <LogOutIcon className="size-5 sm:size-7 flex-shrink-0" />
         ) : (
-          <LogInIcon className="size-7" />
+          <LogInIcon className="size-5 sm:size-7 flex-shrink-0" />
         )}
 
-        <div className="relative flex flex-col items-center text-center">
-          <h2 className="text-lg font-medium mb-1">
+        <div className="relative flex flex-col items-center text-center flex-1">
+          <h2 className="text-sm sm:text-lg font-medium mb-0.5 sm:mb-1">
             {loading ? "Processing..." : isCheckedIn ? "Check Out" : "Check In"}
           </h2>
-          <p className="text-xs opacity-80">
-            {isCheckedIn ? "Click to end your shift" : "Start your work day"}
+          <p className="text-xs opacity-80 line-clamp-1">
+            {isCheckedIn ? "End your shift" : "Start your day"}
           </p>
         </div>
       </button>

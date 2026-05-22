@@ -28,20 +28,39 @@ const EmployeeCard = ({ employee, onDelete, onEdit }) => {
       </div>
 
       {!employee.isDeleted && (
-        <div className="absolute inset-0 bg-linear-to-t from-indigo-700/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-6 gap-3">
-          <button
-            onClick={() => onEdit(employee)}
-            className="p-2.5 bg-white/90 backdrop-blur-sm text-slate-700 hover:text-indigo-600 rounded-xl shadow-lg transition-all hover:scale-105"
-          >
-            <PencilIcon className="w-4 h-4 " />
-          </button>
-          <button
-            onClick={handleDelete}
-            className="p-2.5 bg-white/90 backdrop-blur-sm text-slate-700 hover:text-rose-600 rounded-2xl shadow-lg transition-all hover:scale-105 disabled:opacity-50"
-          >
-            <TrashIcon className="w-4 h-4" />
-          </button>
-        </div>
+        <>
+          {/* Desktop: Hover overlay */}
+          <div className="hidden md:absolute md:inset-0 md:flex bg-linear-to-t from-indigo-700/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity items-end justify-center pb-6 gap-3">
+            <button
+              onClick={() => onEdit(employee)}
+              className="p-2.5 bg-white/90 backdrop-blur-sm text-slate-700 hover:text-indigo-600 rounded-xl shadow-lg transition-all hover:scale-105"
+            >
+              <PencilIcon className="w-4 h-4 " />
+            </button>
+            <button
+              onClick={handleDelete}
+              className="p-2.5 bg-white/90 backdrop-blur-sm text-slate-700 hover:text-rose-600 rounded-2xl shadow-lg transition-all hover:scale-105 disabled:opacity-50"
+            >
+              <TrashIcon className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Mobile: Always visible buttons only if the employe is not deleted */}
+          <div className="md:hidden absolute bottom-3 right-3 flex gap-2">
+            <button
+              onClick={() => onEdit(employee)}
+              className="p-2 bg-indigo-600 text-white rounded-lg shadow-lg transition-all active:scale-95"
+            >
+              <PencilIcon className="w-4 h-4" />
+            </button>
+            <button
+              onClick={handleDelete}
+              className="p-2 bg-rose-600 text-white rounded-lg shadow-lg transition-all active:scale-95"
+            >
+              <TrashIcon className="w-4 h-4" />
+            </button>
+          </div>
+        </>
       )}
 
       <div className="p-5">

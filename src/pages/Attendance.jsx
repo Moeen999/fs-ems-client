@@ -54,9 +54,7 @@ const Attendance = () => {
           </p>
         </div>
       ) : (
-        <div className="mb-0">
-          <CheckInButton todayRec={todayRec} onAction={fetchData} />
-        </div>
+        <CheckInButton todayRec={todayRec} onAction={fetchData} />
       )}
 
       <AttendanceStats history={history} />
